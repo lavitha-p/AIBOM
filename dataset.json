@@ -1,0 +1,29 @@
+{
+  "dataset_name": "WebText",
+  "description": "A dataset of high-quality web pages collected from outbound Reddit links, used for training large-scale language models.",
+  "source": "Collected by OpenAI (not publicly released)",
+  "format": ["Text"],
+  "training_method": "Unsupervised learning with next-word prediction",
+  "applicable_models": ["Transformer-based Language Models", "Chatbots", "Summarization Models", "Text Classification", "Question-Answering Systems"],
+  "limitations": [
+    "Not suitable for computer vision or audio-based AI models",
+    "Biases present in internet content may be reflected in model outputs"
+  ],
+  "data_samples": [
+    {
+      "text": "The future of artificial intelligence is unfolding rapidly with new advancements."
+    },
+    {
+      "text": "Climate change policies are crucial to ensuring a sustainable future."
+    },
+    {
+      "text": "Deep learning models, such as transformers, have revolutionized natural language processing."
+    },
+    {
+      "text": "The history of space exploration is filled with remarkable achievements and discoveries."
+    },
+    {
+      "text": "Advancements in quantum computing may reshape industries in the next decade."
+    }
+  ]
+}

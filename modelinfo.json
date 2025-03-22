@@ -1,0 +1,44 @@
+{
+  "model_name": "YourModelNameHere",
+  "type": "Transformer-based / CNN / RNN / Custom",
+  "model_version": "1.0.0",
+  "developer_name": "Developer or Organization Name",
+  "license_information": "License type (e.g., MIT, Apache 2.0, Proprietary)",
+  "model_architecture": {
+    "ml_model": "Model type (e.g., Transformer, CNN, etc.)",
+    "algorithm": "Algorithm used (e.g., Self-Attention, LSTM, etc.)"
+  },
+  "model_parameters": {
+    "number_of_layers": "e.g., 24",
+    "number_of_attention_heads": "e.g., 16 (if applicable)",
+    "hidden_layer_size": "e.g., 1024",
+    "context_length": "e.g., 512"
+  },
+  "input": {
+    "input_type": "Text / Image / Audio / Other",
+    "input_format": {
+      "type": "e.g., Plain text, PNG, WAV",
+      "encoding": "e.g., UTF-8, Base64, etc.",
+      "example": "A representative input sample"
+    }
+  },
+  "output": {
+    "output_type": "Generated text / Class label / Transcription / Other",
+    "output_format": {
+      "type": "e.g., Plain text, JSON, etc.",
+      "encoding": "e.g., UTF-8, Base64, etc.",
+      "example": "An example of expected output"
+    }
+  },
+  "usage_scenarios": [
+    "Text generation",
+    "Image classification",
+    "Speech recognition",
+    "Recommendation systems"
+  ],
+  "limitations": [
+    "May produce biased or inaccurate results",
+    "Limited to training data scope",
+    "Resource-intensive for large deployments"
+  ]
+}
