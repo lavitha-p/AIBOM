@@ -20,7 +20,7 @@ pipeline {
 
         stage('Generate AIBOM, SBOM, and Vulnerability Report') {
             steps {
-                sh 'python generate_aibom.py'
+                bat 'python generate_aibom.py'
             }
         }
 
