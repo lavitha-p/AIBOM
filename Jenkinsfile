@@ -30,18 +30,17 @@ pipeline {
         }
 
         stage('Run AIBOM Tool') {
-            steps {
-                dir("${env.MODEL_DIR}") {
-                    bat 'python -m pip install -r requirements.txt'
-bat 'python generate_aibom.py'
-bat 'syft . -o json > reports/sbom.json'
-bat 'trivy fs . --format json --output reports/vulnerability_report.json'
-
-                    bat "\"${PYTHON_PATH}\" generate_aibom.py"
-
-                }
-            }
+    steps {
+        dir('minGPT') {
+            bat '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" --version'
+            bat '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" -m pip install -r requirements.txt'
+            bat '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" generate_aibom.py'
+            bat 'syft . -o json > reports/sbom.json'
+            bat 'trivy fs . --format json --output reports/vulnerability_report.json'
         }
+    }
+}
+
 
         stage('Check Reports') {
             steps {
