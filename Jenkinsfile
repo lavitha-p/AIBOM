@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         AIBOM_REPO = "https://github.com/lavitha-p/AIBOM.git"
-        MODEL_REPO = "https://github.com/karpathy/minGPT.git"
+        MODEL_REPO = "https://github.com/salesforce/xgen.git"
         MODEL_DIR = "minGPT"
         PYTHON_PATH = "C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe"
     }
