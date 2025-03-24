@@ -3,7 +3,7 @@ cyclonedx-python-lib>=6.4.1
 cyclonedx-bom>=5.0.0
 
 # SBOM generator tool (Syft optional if you're calling externally)
-syft==0.9.6b4
+#syft==0.9.6b4
 
 # YAML & JSON handling
 pyyaml==6.0.2
