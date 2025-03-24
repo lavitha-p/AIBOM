@@ -31,7 +31,8 @@ pipeline {
     steps {
         script {
             echo "📄 Displaying vulnerability report contents..."
-            bat 'type reports/vulnerability_report.json'
+            bat 'type "reports\\vulnerability_report.json"'
+
 
             def vulnReport = readJSON file: 'reports/vulnerability_report.json'
             def vulnList = vulnReport?.vulnerabilities ?: []
