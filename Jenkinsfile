@@ -30,11 +30,11 @@ pipeline {
 
         stage('Setup Environment') {
             steps {
-                echo 'Setting up environment (Python, pip dependencies, Trivy, Syft)...'
+                echo 'Setting up environment (Python3, pip dependencies, Trivy, Syft)...'
                 bat '''
                     python -m venv venv
                     call venv\\Scripts\\activate
-                    pip install -r https://raw.githubusercontent.com/yourusername/aibom-generator/main/requirements.txt
+                    pip install -r https://raw.githubusercontent.com/lavitha-p/aibom/main/requirements.txt
                 '''
             }
         }
