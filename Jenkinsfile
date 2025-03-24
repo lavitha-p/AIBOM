@@ -1,101 +1,88 @@
 pipeline {
     agent any
 
-    parameters {
-        string(name: 'MODEL_REPO', defaultValue: 'https://github.com/openai/gpt-2.git', description: 'GitHub link to the model repo')
-    }
-
     environment {
-        AIBOM_REPO = 'https://github.com/lavitha-p/aibom.git'
-        AIBOM_SCRIPT = 'generate_aibom.py'
-        PYTHON = 'python3'  // Adjust if needed (like py or python3)
+        MODEL_REPO = "https://github.com/openai/gpt-2.git"
+        AIBOM_REPO = "https://github.com/lavitha-p/aibom.git"
     }
 
     stages {
-
         stage('Build') {
             steps {
-                echo "Starting build for model from ${params.MODEL_REPO}"
+                echo "Starting build for model from ${env.MODEL_REPO}"
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Cloning the model repository...'
+                echo "Cloning the model repository..."
                 dir('model') {
-                    git url: "${params.MODEL_REPO}"
+                    git "${env.MODEL_REPO}"
                 }
             }
         }
-        stage('Test') {
+
+        stage('Setup Environment') {
             steps {
-                echo 'Running preliminary checks...'
+                echo 'Setting up Python and dependencies...'
+                bat '''
+                    python --version
+                    pip install -r https://raw.githubusercontent.com/lavitha-p/aibom/main/requirements.txt
+                '''
             }
         }
 
-        stage('Promote Release') {
+        stage('Verify Installation') {
             steps {
-                echo 'Promoting model for further processing...'
-            }
-        }
-
-        stage('Check Required Files') {
-            steps {
-                echo 'Checking for required files in model repo...'
-                dir('model') {
-                    bat '''
-                        if not exist requirements.txt (
-                            echo "requirements.txt not found!" && exit 1
-                        )
-                    '''
-                }
+                echo 'Verifying tool availability...'
+                bat '''
+                    syft --version
+                    trivy --version
+                '''
             }
         }
 
         stage('Pull AIBOM Tool') {
             steps {
-                echo 'Cloning AIBOM generator tool...'
-                dir('model') {
-                    bat "git clone ${env.AIBOM_REPO}"
+                echo "Cloning AIBOM generator..."
+                dir('aibom-tool') {
+                    git "${env.AIBOM_REPO}"
                 }
             }
         }
 
         stage('Generate AIBOM, SBOM, and Vulnerability Report') {
             steps {
-                echo 'Running AIBOM tool on model...'
-                dir('model') {
-                    bat '''
-                        cd aibom-generator
-                        call ..\\venv\\Scripts\\activate
-                        python generate_aibom.py --model_name "GenericModel" --model_version "1.0"
-                    '''
-                }
+                echo "Running AIBOM tool..."
+                bat '''
+                    cd aibom-tool
+                    python generate_aibom.py --model_name "GenericModel" --model_version "1.0"
+                '''
             }
         }
 
         stage('Analyze Vulnerabilities') {
             steps {
-                echo 'Checking generated vulnerability report...'
-                dir('model/aibom-generator/reports') {
-                    bat '''
-                        if exist vulnerability_report.json (
-                            echo "Vulnerability report found. Analyzing..."
-                        ) else (
-                            echo "vulnerability_report.json not found!" && exit 1
-                        )
-                    '''
-                }
+                echo "Displaying vulnerability summary..."
+                bat '''
+                    type aibom-tool\\reports\\vulnerability_report.json
+                '''
+            }
+        }
+
+        stage('Promote Release') {
+            steps {
+                echo 'Release stage completed!'
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
         failure {
             echo 'Pipeline failed. Check logs for details.'
+        }
+        success {
+            echo 'Pipeline completed successfully!'
         }
     }
 }
