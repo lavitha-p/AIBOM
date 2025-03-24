@@ -1,0 +1,19 @@
+# CycloneDX Python libraries for AIBOM/SBOM generation
+cyclonedx-python-lib==6.4.1
+cyclonedx-bom==3.13.0
+
+# SBOM generator tool (Syft optional if you're calling externally)
+syft==0.94.0
+
+# YAML & JSON handling
+pyyaml==6.0.2
+jsonschema==4.21.1
+
+# Trivy is installed separately (it's a CLI tool, not a Python lib)
+# Install Trivy: https://aquasecurity.github.io/trivy/v0.43.1/installation/
+
+# For making HTTP requests if needed
+requests==2.32.3
+
+# CLI and utility tools
+tqdm==4.67.1
