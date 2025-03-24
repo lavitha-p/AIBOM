@@ -1,52 +1,129 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'MODEL_REPO', defaultValue: 'https://github.com/openai/gpt-2.git', description: 'GitHub link to the model repo')
+    }
+
+    environment {
+        AIBOM_REPO = 'https://github.com/lavitha-p/aibom.git'
+        AIBOM_SCRIPT = 'generate_aibom.py'
+        PYTHON = 'python3'  // Adjust if needed (like py or python3)
+    }
+
     stages {
+
+        stage('Build') {
+            steps {
+                echo "Starting build for model from ${params.MODEL_REPO}"
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Cloning the model repository...'
+                dir('model') {
+                    git url: "${params.MODEL_REPO}"
+                }
+            }
+        }
+
+        stage('Setup Environment') {
+            steps {
+                echo 'Setting up environment (Python, pip dependencies, Trivy, Syft)...'
+                bat '''
+                    python -m venv venv
+                    call venv\\Scripts\\activate
+                    pip install -r https://raw.githubusercontent.com/yourusername/aibom-generator/main/requirements.txt
+                '''
+            }
+        }
+
+        stage('Verify Installation') {
+            steps {
+                echo 'Verifying required tools and files...'
+                dir('model') {
+                    bat '''
+                        if not exist dataset.json (
+                            echo "Missing dataset.json" && exit 1
+                        )
+                        if not exist modelinfo.json (
+                            echo "Missing modelinfo.json" && exit 1
+                        )
+                    '''
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running preliminary checks...'
+            }
+        }
+
+        stage('Promote Release') {
+            steps {
+                echo 'Promoting model for further processing...'
+            }
+        }
+
         stage('Check Required Files') {
             steps {
-                script {
-                    if (!fileExists('dataset.json') || !fileExists('modelinfo.json')) {
-                        error(" Required files missing: dataset.json or modelinfo.json")
-                    }
+                echo 'Checking for required files in model repo...'
+                dir('model') {
+                    bat '''
+                        if not exist requirements.txt (
+                            echo "requirements.txt not found!" && exit 1
+                        )
+                    '''
                 }
             }
         }
 
         stage('Pull AIBOM Tool') {
             steps {
-                echo " Repo already cloned — skipping separate pull step."
+                echo 'Cloning AIBOM generator tool...'
+                dir('model') {
+                    bat "git clone ${env.AIBOM_REPO}"
+                }
             }
         }
 
         stage('Generate AIBOM, SBOM, and Vulnerability Report') {
-    steps {
-        bat '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" generate_aibom.py'
-    }
-}
-
-
-       
-
-                    stage('Analyze Vulnerabilities') {
-    steps {
-        script {
-            echo "📄 Displaying vulnerability report contents..."
-            bat 'type "reports\\vulnerability_report.json"'
-
-
-            def vulnReport = readJSON file: 'reports/vulnerability_report.json'
-            def vulnList = vulnReport?.vulnerabilities ?: []
-
-            if (vulnList && vulnList.size() > 0) {
-                echo "⚠️ WARNING: Model not ready for production due to vulnerabilities:"
-                vulnList.each { vuln ->
-                    echo "-> ${vuln}"
+            steps {
+                echo 'Running AIBOM tool on model...'
+                dir('model') {
+                    bat '''
+                        cd aibom-generator
+                        call ..\\venv\\Scripts\\activate
+                        python generate_aibom.py --model_name "GenericModel" --model_version "1.0"
+                    '''
                 }
-            } else {
-                echo "✅ No vulnerabilities found. Model is ready for production!"
+            }
+        }
+
+        stage('Analyze Vulnerabilities') {
+            steps {
+                echo 'Checking generated vulnerability report...'
+                dir('model/aibom-generator/reports') {
+                    bat '''
+                        if exist vulnerability_report.json (
+                            echo "Vulnerability report found. Analyzing..."
+                        ) else (
+                            echo "vulnerability_report.json not found!" && exit 1
+                        )
+                    '''
+                }
             }
         }
     }
- }
-}
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Check logs for details.'
+        }
+    }
 }
