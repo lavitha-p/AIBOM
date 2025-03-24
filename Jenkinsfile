@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     if (!fileExists('dataset.json') || !fileExists('modelinfo.json')) {
-                        error("❌ Required files missing: dataset.json or modelinfo.json")
+                        error(" Required files missing: dataset.json or modelinfo.json")
                     }
                 }
             }
@@ -14,7 +14,7 @@ pipeline {
 
         stage('Pull AIBOM Tool') {
             steps {
-                echo "✅ Repo already cloned — skipping separate pull step."
+                echo " Repo already cloned — skipping separate pull step."
             }
         }
 
@@ -30,9 +30,9 @@ pipeline {
                 script {
                     def report = readJSON file: 'reports/vulnerability_report.json'
                     if (report.vulnerabilities && report.vulnerabilities.size() > 0) {
-                        echo "⚠️ Vulnerabilities found!"
+                        echo " Vulnerabilities found!"
                     } else {
-                        echo "✅ No vulnerabilities detected."
+                        echo " No vulnerabilities detected."
                     }
                 }
             }
