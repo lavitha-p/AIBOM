@@ -32,15 +32,7 @@ pipeline {
             }
         }
 
-        stage('Verify Installation') {
-            steps {
-                echo 'Verifying tool availability...'
-                bat '''
-                    syft --version
-                    trivy --version
-                '''
-            }
-        }
+        
 
         stage('Pull AIBOM Tool') {
             steps {
