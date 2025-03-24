@@ -1,6 +1,6 @@
 # CycloneDX Python libraries for AIBOM/SBOM generation
-cyclonedx-python-lib==6.4.1
-cyclonedx-bom==3.13.0
+cyclonedx-python-lib>=6.4.1
+cyclonedx-bom>=5.0.0
 
 # SBOM generator tool (Syft optional if you're calling externally)
 syft==0.94.0
