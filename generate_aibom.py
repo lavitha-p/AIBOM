@@ -125,7 +125,7 @@ def scan_vulnerabilities(reports_folder):
     vulnerability_path = os.path.join(reports_folder, "vulnerability_report.json")
     
     try:
-        subprocess.run(["trivy", "fs", ".", "--include-dev-deps", "-f", "json", f"--output={vulnerability_path}"], check=True)
+        subprocess.run([r"C:\Users\HP\scoop\shims\trivy.exe", "fs", ".", "--include-dev-deps", "-f", "json", f"--output={vulnerability_path}"], check=True)
         print(f"Vulnerability report generated: {vulnerability_path}")
         
         with open(vulnerability_path, "r") as f:
