@@ -56,7 +56,7 @@ def generate_model_info():
     }
     with open("modelinfo.json", "w") as f:
         json.dump(model_info, f, indent=4)
-    print("✅ modelinfo.json generated.")
+    print(" modelinfo.json generated.")
 
 def generate_dataset_info():
     dataset_info = {
@@ -86,7 +86,7 @@ def generate_dataset_info():
     }
     with open("dataset.json", "w") as f:
         json.dump(dataset_info, f, indent=4)
-    print("✅ dataset.json generated.")
+    print("dataset.json generated.")
 
 def generate_aibom(model_name, model_version, reports_folder):
     aibom_data = {
@@ -108,17 +108,17 @@ def generate_aibom(model_name, model_version, reports_folder):
     with open(aibom_path, "w") as f:
         json.dump(aibom_data, f, indent=4)
     
-    print(f"✅ AIBOM generated: {aibom_path}")
+    print(f" AIBOM generated: {aibom_path}")
     return aibom_path
 
 def generate_sbom(reports_folder):
     try:
         sbom_path = os.path.join(reports_folder, "sbom.json")
         subprocess.run(["syft", "-o", "json", f"--file={sbom_path}", "."], check=True)
-        print(f"✅ SBOM generated: {sbom_path}")
+        print(f"SBOM generated: {sbom_path}")
         return sbom_path
     except subprocess.CalledProcessError:
-        print("❌ Failed to generate SBOM. Ensure Syft is installed and try again.")
+        print("Failed to generate SBOM. Ensure Syft is installed and try again.")
         return None
 
 def scan_vulnerabilities(reports_folder):
@@ -126,7 +126,7 @@ def scan_vulnerabilities(reports_folder):
     
     try:
         subprocess.run(["trivy", "fs", ".", "--include-dev-deps", "-f", "json", f"--output={vulnerability_path}"], check=True)
-        print(f"✅ Vulnerability report generated: {vulnerability_path}")
+        print(f"Vulnerability report generated: {vulnerability_path}")
         
         with open(vulnerability_path, "r") as f:
             data = json.load(f)
@@ -147,22 +147,22 @@ def scan_vulnerabilities(reports_folder):
             table.align = "l"
             for vuln in vulnerabilities:
                 table.add_row(vuln)
-            print("\n🔍 Vulnerability Scan Results:\n")
+            print("\nVulnerability Scan Results:\n")
             print(table)
         else:
-            print("\n✅ No vulnerabilities found.")
+            print("\n No vulnerabilities found.")
         
         return vulnerability_path
     except subprocess.CalledProcessError:
-        print("❌ Failed to scan for vulnerabilities. Ensure Trivy is installed and try again.")
+        print(" Failed to scan for vulnerabilities. Ensure Trivy is installed and try again.")
         return None
     except json.JSONDecodeError:
-        print("❌ Error parsing vulnerability report JSON.")
+        print(" Error parsing vulnerability report JSON.")
         return None
 
 def sign_file(file_path, private_key_path):
     if not private_key_path:
-        print("⚠️ Skipping digital signature (no private key provided).")
+        print(" Skipping digital signature (no private key provided).")
         return
     try:
         with open(file_path, "rb") as f:
@@ -183,9 +183,9 @@ def sign_file(file_path, private_key_path):
         signature_path = file_path + ".sig"
         with open(signature_path, "wb") as sig_file:
             sig_file.write(signature)
-        print(f"🔏 Digital signature created: {signature_path}")
+        print(f" Digital signature created: {signature_path}")
     except Exception as e:
-        print(f"❌ Error signing file {file_path}: {e}")
+        print(f" Error signing file {file_path}: {e}")
 
 def main():
     parser = argparse.ArgumentParser(description="Generate AIBOM, SBOM, scan vulnerabilities, and sign reports.")
@@ -202,11 +202,11 @@ def main():
     model_path = os.getcwd()
     reports_folder = ensure_reports_directory(model_path)
 
-    # 🔄 Auto-generate metadata
+    #  Auto-generate metadata
     generate_model_info()
     generate_dataset_info()
     
-    print(f"🚀 Running analysis for {model_name} (Version: {model_version})")
+    print(f" Running analysis for {model_name} (Version: {model_version})")
     
     aibom_path = generate_aibom(model_name, model_version, reports_folder)
     sbom_path = generate_sbom(reports_folder)
@@ -216,7 +216,7 @@ def main():
         if file:
             sign_file(file, private_key_path)
     
-    print("\n🎯 All tasks completed successfully!")
+    print("\n All tasks completed successfully!")
 
 if __name__ == "__main__":
     main()
