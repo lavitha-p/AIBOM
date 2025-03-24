@@ -1,52 +1,49 @@
 pipeline {
     agent any
 
+    environment {
+        AIBOM_REPO = "https://github.com/lavitha-p/AIBOM.git"
+        MODEL_REPO = "https://github.com/karpathy/minGPT.git"
+        MODEL_DIR = "minGPT"
+    }
+
     stages {
-        stage('Check Required Files') {
+        stage('Clone Open Source Model') {
             steps {
-                script {
-                    if (!fileExists('dataset.json') || !fileExists('modelinfo.json')) {
-                        error(" Required files missing: dataset.json or modelinfo.json")
-                    }
+                dir("${WORKSPACE}") {
+                    bat "git clone %MODEL_REPO% %MODEL_DIR%"
                 }
             }
         }
 
-        stage('Pull AIBOM Tool') {
+        stage('Inject AIBOM Generator Tools') {
             steps {
-                echo " Repo already cloned — skipping separate pull step."
-            }
-        }
-
-        stage('Generate AIBOM, SBOM, and Vulnerability Report') {
-    steps {
-        bat '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" generate_aibom.py'
-    }
-}
-
-
-       
-
-                    stage('Analyze Vulnerabilities') {
-    steps {
-        script {
-            echo "📄 Displaying vulnerability report contents..."
-            bat 'type "reports\\vulnerability_report.json"'
-
-
-            def vulnReport = readJSON file: 'reports/vulnerability_report.json'
-            def vulnList = vulnReport?.vulnerabilities ?: []
-
-            if (vulnList && vulnList.size() > 0) {
-                echo "⚠️ WARNING: Model not ready for production due to vulnerabilities:"
-                vulnList.each { vuln ->
-                    echo "-> ${vuln}"
+                dir("${env.MODEL_DIR}") {
+                    bat "git clone %AIBOM_REPO% aibom-temp"
+                    bat "copy aibom-temp\\*.py ."
+                    bat "copy aibom-temp\\*.json ."
+                    bat "rmdir /s /q aibom-temp"
                 }
-            } else {
-                echo "✅ No vulnerabilities found. Model is ready for production!"
+            }
+        }
+
+        stage('Run AIBOM Tool') {
+            steps {
+                dir("${env.MODEL_DIR}") {
+                    bat "python generate_aibom.py"
+                }
+            }
+        }
+
+        stage('Check Reports') {
+            steps {
+                dir("${env.MODEL_DIR}\\reports") {
+                    bat "dir"
+                    bat "type aibom.json || echo aibom.json not found"
+                    bat "type sbom.json || echo sbom.json not found"
+                    bat "type vulnerability_report.json || echo vulnerability_report.json not found"
+                }
             }
         }
     }
- }
-}
 }
