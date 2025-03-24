@@ -26,8 +26,8 @@ pipeline {
             steps {
                 echo 'Setting up Python and dependencies...'
                 bat '''
-                    python --version
-                    pip install -r https://raw.githubusercontent.com/lavitha-p/aibom/main/requirements.txt
+                    "C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" --version
+                    "C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\pip.exe" install -r https://raw.githubusercontent.com/lavitha-p/aibom/main/requirements.txt
                 '''
             }
         }
