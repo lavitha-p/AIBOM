@@ -1,64 +1,52 @@
 pipeline {
     agent any
 
-    environment {
-        AIBOM_REPO = "https://github.com/lavitha-p/AIBOM.git"
-        MODEL_REPO = "https://github.com/salesforce/xgen.git"
-        MODEL_DIR = "minGPT"
-        PYTHON_PATH = "C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe"
-    }
-
     stages {
-        stage('Clone Open Source Model') {
+        stage('Check Required Files') {
             steps {
-                dir("${WORKSPACE}") {
-                    bat 'IF EXIST minGPT (rmdir /s /q minGPT)'
-                    bat 'git clone %MODEL_REPO% %MODEL_DIR%'
+                script {
+                    if (!fileExists('dataset.json') || !fileExists('modelinfo.json')) {
+                        error(" Required files missing: dataset.json or modelinfo.json")
+                    }
                 }
             }
         }
 
-        stage('Inject AIBOM Generator Tools') {
+        stage('Pull AIBOM Tool') {
             steps {
-                dir("${env.MODEL_DIR}") {
-                    bat "git clone %AIBOM_REPO% aibom-temp"
-                    bat "copy aibom-temp\\*.py ."
-                    bat "copy aibom-temp\\*.json ."
-                    bat "rmdir /s /q aibom-temp"
-                }
+                echo " Repo already cloned — skipping separate pull step."
             }
         }
 
-        stage('Run AIBOM Tool') {
+        stage('Generate AIBOM, SBOM, and Vulnerability Report') {
     steps {
-        dir('minGPT') {
-            bat '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" --version'
-            bat '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" -m pip install -r requirements.txt'
-            bat '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" generate_aibom.py'
-            bat 'syft . -o json > reports/sbom.json'
-            bat 'trivy fs . --format json --output reports/vulnerability_report.json'
-        }
+        bat '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" generate_aibom.py'
     }
 }
 
 
-        stage('Check Reports') {
-            steps {
-                dir("${env.MODEL_DIR}\\reports") {
-                    bat "dir"
-                    bat "type aibom.json || echo ❌ aibom.json not found"
-                    bat "type sbom.json || echo ❌ sbom.json not found"
-                    bat "type vulnerability_report.json || echo ❌ vulnerability_report.json not found"
-                }
-            }
-        }
-    }
+       
 
-    post {
-        always {
-            dir("${WORKSPACE}") {
-                bat 'IF EXIST minGPT (rmdir /s /q minGPT)'
+                    stage('Analyze Vulnerabilities') {
+    steps {
+        script {
+            echo "📄 Displaying vulnerability report contents..."
+            bat 'type "reports\\vulnerability_report.json"'
+
+
+            def vulnReport = readJSON file: 'reports/vulnerability_report.json'
+            def vulnList = vulnReport?.vulnerabilities ?: []
+
+            if (vulnList && vulnList.size() > 0) {
+                echo "⚠️ WARNING: Model not ready for production due to vulnerabilities:"
+                vulnList.each { vuln ->
+                    echo "-> ${vuln}"
+                }
+            } else {
+                echo "✅ No vulnerabilities found. Model is ready for production!"
             }
         }
     }
+ }
+}
 }
