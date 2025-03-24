@@ -27,18 +27,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Setup Environment') {
-            steps {
-                echo 'Setting up environment (Python3, pip dependencies, Trivy, Syft)...'
-                bat '''
-                    python -m venv venv
-                    call venv\\Scripts\\activate
-                    pip install -r https://raw.githubusercontent.com/lavitha-p/aibom/main/requirements.txt
-                '''
-            }
-        }
-
         stage('Verify Installation') {
             steps {
                 echo 'Verifying required tools and files...'
