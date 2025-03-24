@@ -28,12 +28,13 @@ pipeline {
         stage('Analyze Vulnerabilities') {
             steps {
                 script {
-                    def report = readJSON file: 'reports/vulnerability_report.json'
-                    if (report.vulnerabilities && report.vulnerabilities.size() > 0) {
-                        echo " Vulnerabilities found!"
-                    } else {
-                        echo " No vulnerabilities detected."
-                    }
+                    def vulnReport = readJSON file: 'reports/vulnerability_report.json'
+if (vulnReport.vulnerabilities.size() > 0) {
+    echo "⚠️ Vulnerabilities detected!"
+} else {
+    echo "✅ No vulnerabilities found."
+}
+
                 }
             }
         }
