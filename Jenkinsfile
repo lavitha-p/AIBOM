@@ -28,6 +28,8 @@ pipeline {
         stage('Analyze Vulnerabilities') {
             steps {
                 script {
+                    bat 'cat reports/vulnerability_report.json'
+
                     def vulnReport = readJSON file: 'reports/vulnerability_report.json'
                     def vulnList = vulnReport?.vulnerabilities ?: []
 
