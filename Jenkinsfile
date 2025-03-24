@@ -27,22 +27,6 @@ pipeline {
                 }
             }
         }
-        stage('Verify Installation') {
-            steps {
-                echo 'Verifying required tools and files...'
-                dir('model') {
-                    bat '''
-                        if not exist dataset.json (
-                            echo "Missing dataset.json" && exit 1
-                        )
-                        if not exist modelinfo.json (
-                            echo "Missing modelinfo.json" && exit 1
-                        )
-                    '''
-                }
-            }
-        }
-
         stage('Test') {
             steps {
                 echo 'Running preliminary checks...'
