@@ -32,6 +32,11 @@ pipeline {
         stage('Run AIBOM Tool') {
             steps {
                 dir("${env.MODEL_DIR}") {
+                    bat 'python -m pip install -r requirements.txt'
+bat 'python generate_aibom.py'
+bat 'syft . -o json > reports/sbom.json'
+bat 'trivy fs . --format json --output reports/vulnerability_report.json'
+
                     bat "\"${PYTHON_PATH}\" generate_aibom.py"
 
                 }
