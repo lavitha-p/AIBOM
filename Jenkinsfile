@@ -19,10 +19,11 @@ pipeline {
         }
 
         stage('Generate AIBOM, SBOM, and Vulnerability Report') {
-            steps {
-                bat 'python generate_aibom.py'
-            }
-        }
+    steps {
+        bat '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" generate_aibom.py'
+    }
+}
+
 
         stage('Analyze Vulnerabilities') {
             steps {
