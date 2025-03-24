@@ -8,14 +8,15 @@ pipeline {
     }
     
 
-    stages {
-        stage('Clone Open Source Model') {
-            steps {
-                dir("${WORKSPACE}") {
-                    bat "git clone %MODEL_REPO% %MODEL_DIR%"
-                }
-            }
+    stage('Clone Open Source Model') {
+    steps {
+        dir("${WORKSPACE}") {
+            bat 'IF EXIST minGPT (rmdir /s /q minGPT)'
+            bat 'git clone https://github.com/karpathy/minGPT.git minGPT'
         }
+    }
+}
+
 
         stage('Inject AIBOM Generator Tools') {
             steps {
