@@ -25,23 +25,27 @@ pipeline {
 }
 
 
-        stage('Analyze Vulnerabilities') {
-            steps {
-                script {
-                    bat 'cat reports/vulnerability_report.json'
-                    
-                    def vulnReport = readJSON file: 'reports/vulnerability_report.json'
-                    def vulnList = vulnReport?.vulnerabilities ?: []
+       
 
-                    if (vulnList.size() > 0) {
-                            echo "⚠️ Vulnerabilities found!"
-                            vulnList.each { echo "-> ${it}" }
-                    } else {
-                        echo "✅ No vulnerabilities found!"
-                    }
+                    stage('Analyze Vulnerabilities') {
+    steps {
+        script {
+            echo "📄 Displaying vulnerability report contents..."
+            sh 'cat reports/vulnerability_report.json'
 
+            def vulnReport = readJSON file: 'reports/vulnerability_report.json'
+            def vulnList = vulnReport?.vulnerabilities ?: []
+
+            if (vulnList && vulnList.size() > 0) {
+                echo "⚠️ WARNING: Model not ready for production due to vulnerabilities:"
+                vulnList.each { vuln ->
+                    echo "-> ${vuln}"
                 }
+            } else {
+                echo "✅ No vulnerabilities found. Model is ready for production!"
             }
         }
     }
+ }
+}
 }
