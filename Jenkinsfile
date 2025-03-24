@@ -9,7 +9,7 @@ pipeline {
     stage('Run AIBOM Tool') {
     steps {
         dir('minGPT') {
-            bat 'C:\Users\HP\AppData\Local\Microsoft\WindowsApps\python3.exe generate_aibom.py'
+            bat 'C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps\\python3.exe generate_aibom.py'
         }
     }
 }
