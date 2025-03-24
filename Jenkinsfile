@@ -6,13 +6,7 @@ pipeline {
         MODEL_REPO = "https://github.com/karpathy/minGPT.git"
         MODEL_DIR = "minGPT"
     }
-    stage('Run AIBOM Tool') {
-    steps {
-        dir('minGPT') {
-            bat 'C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps\\python3.exe generate_aibom.py'
-        }
-    }
-}
+    
 
     stages {
         stage('Clone Open Source Model') {
@@ -35,12 +29,12 @@ pipeline {
         }
 
         stage('Run AIBOM Tool') {
-            steps {
-                dir("${env.MODEL_DIR}") {
-                    bat "python generate_aibom.py"
-                }
-            }
+    steps {
+        dir('minGPT') {
+            bat 'C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps\\python3.exe generate_aibom.py'
         }
+    }
+}
 
         stage('Check Reports') {
             steps {
