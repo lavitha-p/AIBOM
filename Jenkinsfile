@@ -5,7 +5,7 @@ pipeline {
         AIBOM_REPO = "https://github.com/lavitha-p/AIBOM.git"
         MODEL_REPO = "https://github.com/karpathy/minGPT.git"
         MODEL_DIR = "minGPT"
-        PYTHON_PATH = "C:\\Users\\HP\\AppData\\Local\\Microsoft\\WindowsApps\\python3.exe"
+        PYTHON_PATH = "C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe"
     }
 
     stages {
@@ -33,6 +33,7 @@ pipeline {
             steps {
                 dir("${env.MODEL_DIR}") {
                     bat "\"${PYTHON_PATH}\" generate_aibom.py"
+
                 }
             }
         }
