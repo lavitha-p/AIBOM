@@ -35,13 +35,13 @@ pipeline {
         
 
         stage('Pull AIBOM Tool') {
-            steps {
-                echo "Cloning AIBOM generator..."
-                dir('aibom-tool') {
-                    git "${env.AIBOM_REPO}"
-                }
-            }
+    steps {
+        dir('aibom-tool') {
+            git url: 'https://github.com/lavitha-p/aibom.git', branch: 'main'
         }
+    }
+}
+
 
         stage('Generate AIBOM, SBOM, and Vulnerability Report') {
             steps {
