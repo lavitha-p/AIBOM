@@ -48,7 +48,7 @@ pipeline {
                 echo "Running AIBOM tool..."
                 bat '''
                     cd aibom-tool
-                    bat '"C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" generate_aibom.py --model_name "GenericModel" --model_version "1.0"'
+                    "C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" generate_aibom.py --model_name "GenericModel" --model_version "1.0"
 
                 '''
             }
