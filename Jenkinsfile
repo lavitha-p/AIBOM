@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        MODEL_REPO = "https://github.com/openai/gpt-2.git"
+        MODEL_REPO = "https://github.com/salesforce/xgen.git"
         AIBOM_REPO = "https://github.com/lavitha-p/aibom.git"
     }
 
