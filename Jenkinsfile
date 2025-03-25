@@ -84,17 +84,19 @@ pipeline {
             }
         }
 
-        stage('Analyze Vulnerabilities') {
-            steps {
-                dir('aibom-tool') {
-                    bat '''
-                        "C:\\Users\\HP\\scoop\\shims\\trivy.exe" fs --severity CRITICAL,HIGH,MEDIUM,LOW --format json -o ..\\reports\\vulnerability_report.json .
-                    '''
-                    echo "Displaying vulnerability summary..."
-                    bat 'type ..\\reports\\vulnerability_report.json'
-                }
-            }
+       stage('Analyze Vulnerabilities') {
+    steps {
+        dir('aibom-tool') {
+            bat '''
+                if not exist ..\\reports (
+                    mkdir ..\\reports
+                )
+                "C:\\Users\\HP\\scoop\\shims\\trivy.exe" fs --severity CRITICAL,HIGH,MEDIUM,LOW --format json -o ..\\reports\\vulnerability_report.json .
+            '''
         }
+    }
+}
+
 
         stage('Promote Release') {
             steps {
