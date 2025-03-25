@@ -54,14 +54,17 @@ pipeline {
             }
         }
 
-        stage('Analyze Vulnerabilities') {
-            steps {
-                echo "Displaying vulnerability summary..."
-                bat '''
-                    type aibom-tool\\reports\\vulnerability_report.json
-                '''
-            }
+       stage('Analyze Vulnerabilities') {
+    steps {
+        dir('aibom-tool') {
+            
+            bat 'trivy fs --severity CRITICAL,HIGH,MEDIUM,LOW --format json -o ..\\reports\\vulnerability_report.json .'
+            echo "Displaying vulnerability summary..."
+            bat 'type ..\\reports\\vulnerability_report.json'
         }
+    }
+}
+
 
         stage('Promote Release') {
             steps {
