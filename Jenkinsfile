@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         MODEL_REPO = "https://github.com/salesforce/xgen.git"
-        model_Branch = 'main'
+        MODEL_BRANCH = 'main'
         AIBOM_REPO = "https://github.com/lavitha-p/aibom.git"
     }
 
@@ -15,13 +15,14 @@ pipeline {
         }
 
         stage('Deploy') {
-            steps {
-                echo "Cloning the model repository..."
-                dir('model') {
-                    git "${env.MODEL_REPO}"
-                }
-            }
+    steps {
+        echo "Cloning the model repository..."
+        dir('model') {
+            git branch: "${env.model_Branch}", url: "${env.MODEL_REPO}"
         }
+    }
+}
+
 
         stage('Setup Environment') {
             steps {
