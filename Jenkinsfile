@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         MODEL_REPO = "https://github.com/salesforce/xgen.git"
+        model_Branch = 'main'
         AIBOM_REPO = "https://github.com/lavitha-p/aibom.git"
     }
 
