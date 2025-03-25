@@ -31,10 +31,14 @@ pipeline {
                     def reqFile = modelReq ? 'model/requirements.txt' : 'aibom-tool/requirements.txt'
                     echo "Using requirements file: ${reqFile}"
 
-                    bat """
-                        "C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" --version
-                        "C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\pip.exe" install -r ${reqFile}
-                    """
+        bat '''
+            "C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python310\\python.exe" -m pip install --upgrade pip setuptools wheel
+            if exist model\\requirements.txt (
+                "C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python310\\Scripts\\pip.exe" install -r model\\requirements.txt
+            ) else (
+                "C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python310\\Scripts\\pip.exe" install -r aibom-tool\\requirements.txt
+            )
+        '''
                 }
             }
         }
