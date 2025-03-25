@@ -58,7 +58,10 @@ pipeline {
     steps {
         dir('aibom-tool') {
             
-            bat '"C:\Users\HP\scoop\shims\trivy.exe" fs --severity CRITICAL,HIGH,MEDIUM,LOW --format json -o ..\\reports\\vulnerability_report.json .'
+           bat '''
+            "C:\\Users\\HP\\scoop\\shims\\trivy.exe" fs --severity CRITICAL,HIGH,MEDIUM,LOW --format json -o ..\\reports\\vulnerability_report.json .
+           '''
+
             echo "Displaying vulnerability summary..."
             bat 'type ..\\reports\\vulnerability_report.json'
         }
